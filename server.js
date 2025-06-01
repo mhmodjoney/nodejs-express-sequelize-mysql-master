@@ -2,13 +2,18 @@ const express = require("express");
 const cors = require("cors");
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
+const cors = require("cors");
+
+
+
+app.use(cors(corsOptions));
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:8080"
+const corsOptions = {
+  origin: "*",  // <-- allow all origins for testing (change to specific origin for production)
+  credentials: true
 };
-
 
 
 app.use(cors(corsOptions));
