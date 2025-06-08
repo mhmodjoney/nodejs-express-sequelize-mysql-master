@@ -5,7 +5,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems:
+   * /menuitems:
    *   post:
    *     summary: Create a new MenuItem
    *     requestBody:
@@ -31,7 +31,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems:
+   * /menuitems:
    *   get:
    *     summary: Retrieve all MenuItems
    *     responses:
@@ -42,7 +42,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems/{id}:
+   * /menuitems/{id}:
    *   get:
    *     summary: Retrieve a single MenuItem by ID
    *     parameters:
@@ -61,7 +61,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems/{id}:
+   * /menuitems/{id}:
    *   put:
    *     summary: Update a MenuItem by ID
    *     parameters:
@@ -95,7 +95,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems/{id}:
+   * /menuitems/{id}:
    *   delete:
    *     summary: Delete a MenuItem by ID
    *     parameters:
@@ -114,7 +114,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems:
+   * /menuitems:
    *   delete:
    *     summary: Delete all MenuItems
    *     responses:
@@ -125,7 +125,7 @@ module.exports = app => {
 
   /**
    * @swagger
-   * /api/menuitems/category/{category}:
+   * /menuitems/category/{category}:
    *   get:
    *     summary: Retrieve all MenuItems by category
    *     parameters:
@@ -139,6 +139,25 @@ module.exports = app => {
    *         description: List of menu items in the specified category
    */
   router.get("/category/:category", menuitems.findAllByCategory);
+
+
+    /**
+   * @swagger
+   * /menuitems/findAllByRestaurant/{restaurant_id}:
+   *   get:
+   *     summary: Retrieve all MenuItems by restaurant_id
+   *     parameters:
+   *       - in: path
+   *         name: restaurant_id
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: List of menu items in the specified category
+   */
+  router.get("/findAllByRestaurant/:restaurant_id", menuitems.findAllByRestaurant);
+
 
   app.use('/api/menuitems', router);
 };

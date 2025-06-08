@@ -10,7 +10,7 @@ const options = {
       version: '1.0.0',
       description: 'API Documentation for my Node.js project',
     },
-    servers: [{ url: 'http://localhost:8080' }],
+    servers: [{ url: 'http://localhost:8080/api' }],
   },
   apis: ['./app/routes/*.js'], // ← make sure this matches your project structure
 };

@@ -1,5 +1,5 @@
 const db = require("../models");
-const MenuItem = db.menu_items;
+const MenuItem = db.menu_item;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new MenuItem
@@ -19,6 +19,55 @@ exports.create = (req, res) => {
     photo: req.body.photo,
     created_by: req.body.created_by,
     updated_by: req.body.updated_by
+  };
+
+  MenuItem.create(menuItem)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the MenuItem."
+      });
+    });
+};
+
+
+// Find all MenuItems by restaurant id
+exports.findAllByRestaurant = (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+
+ MenuItem.findAll({ where: { restaurantId: restaurant_id } })
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving menu items by restaurant."
+      });
+    });
+};
+
+// Create and Save a new MenuItem under a restaurant
+exports.createUnderRestaurant = (req, res) => {
+  if (!req.body.item_name || !req.body.price || !req.body.category || !req.body.created_by || !req.body.restaurant_id) {
+    res.status(400).send({
+      message: "Content can not be empty! (item_name, price, category, created_by, restaurant_id are required)"
+    });
+    return;
+  }
+
+  const menuItem = {
+    item_name: req.body.item_name,
+    price: req.body.price,
+    category: req.body.category,
+    description: req.body.description,
+    photo: req.body.photo,
+    created_by: req.body.created_by,
+    updated_by: req.body.updated_by,
+    restaurant_id: req.body.restaurant_id
   };
 
   MenuItem.create(menuItem)
