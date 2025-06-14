@@ -27,7 +27,7 @@ module.exports = app => {
    *       201:
    *         description: MenuItem created successfully
    */
-  router.post("/", menuitems.create);
+  router.post("/", menuitems.createUnderRestaurant);
 
   /**
    * @swagger

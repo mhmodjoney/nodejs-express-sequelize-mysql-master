@@ -3,35 +3,7 @@ const MenuItem = db.menu_item;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new MenuItem
-exports.create = (req, res) => {
-  if (!req.body.item_name || !req.body.price || !req.body.category || !req.body.created_by) {
-    res.status(400).send({
-      message: "Content can not be empty! (item_name, price, category, created_by are required)"
-    });
-    return;
-  }
 
-  const menuItem = {
-    item_name: req.body.item_name,
-    price: req.body.price,
-    category: req.body.category,
-    description: req.body.description,
-    photo: req.body.photo,
-    created_by: req.body.created_by,
-    updated_by: req.body.updated_by
-  };
-
-  MenuItem.create(menuItem)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the MenuItem."
-      });
-    });
-};
 
 
 // Find all MenuItems by restaurant id
@@ -52,9 +24,9 @@ exports.findAllByRestaurant = (req, res) => {
 
 // Create and Save a new MenuItem under a restaurant
 exports.createUnderRestaurant = (req, res) => {
-  if (!req.body.item_name || !req.body.price || !req.body.category || !req.body.created_by || !req.body.restaurant_id) {
+  if (!req.body.item_name || !req.body.price || !req.body.category || !req.body.created_by || !req.body.restaurantId) {
     res.status(400).send({
-      message: "Content can not be empty! (item_name, price, category, created_by, restaurant_id are required)"
+      message: "Content can not be empty! (item_name, price, category, created_by, restaurantId are required)"
     });
     return;
   }
@@ -67,7 +39,7 @@ exports.createUnderRestaurant = (req, res) => {
     photo: req.body.photo,
     created_by: req.body.created_by,
     updated_by: req.body.updated_by,
-    restaurant_id: req.body.restaurant_id
+    restaurantId: req.body.restaurantId
   };
 
   MenuItem.create(menuItem)
