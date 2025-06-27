@@ -32,7 +32,6 @@ db.sequelize = sequelize;
 // Import models
 db.restaurant = require("./restaurant.model.js")(sequelize, Sequelize);
 db.menu_item = require("./menu_item.model.js")(sequelize, Sequelize);
-db.tutorial = require("./tutorial.model.js")(sequelize, Sequelize);
 
 // Setup relationships
 db.restaurant.hasMany(db.menu_item, { foreignKey: 'restaurantId' });

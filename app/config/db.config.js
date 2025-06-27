@@ -1,10 +1,6 @@
 module.exports = {
-  HOST: "dpg-d0qahlre5dus739ddk0g-a.singapore-postgres.render.com",
-  USER: "menu_db_2rx9_user",
-  PASSWORD: "tGOAVifpn1hBTEwWxR4WpLYKLRbTyif8",
-  DB: "menu_db_2rx9",
-  dialect: "postgres", // Make sure the dialect is 'postgres'
-  port: 5432, // Add the port number
+  URL: "postgresql://mhmodmore7mhmod:npg_8CFgzOm1HpTI@ep-red-recipe-548838-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+  dialect: "postgres",
   pool: {
     max: 5,
     min: 0,
