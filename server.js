@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 
 require("./app/routes/menuitem.routes")(app);
 require("./app/routes//restaurants.routes")(app);
-
+require("./app/routes/upload.routes")(app);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // set port, listen for requests
