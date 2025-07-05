@@ -1,38 +1,39 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, DataTypes) => {
   const MenuItem = sequelize.define("menu_item", {
     item_name: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false
     },
     price: {
-      type: Sequelize.FLOAT,
-      allowNull: false,
-      validate: {
-        min: 0
-      }
+      type: DataTypes.FLOAT,
+      allowNull: false
     },
     category: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false
     },
     description: {
-      type: Sequelize.TEXT
+      type: DataTypes.TEXT
     },
     photo: {
-      type: Sequelize.STRING // this can hold a URL or path to image
+      type: DataTypes.STRING
     },
     created_by: {
-      type: Sequelize.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     updated_by: {
-      type: Sequelize.STRING
+      type: DataTypes.STRING
+    },
+    restaurantId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "active" // default to active
     }
-  }, {
-    timestamps: true  // disable Sequelize auto timestamps if you're handling manually
   });
 
   return MenuItem;
 };
-
-

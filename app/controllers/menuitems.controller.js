@@ -3,18 +3,31 @@ const MenuItem = db.menu_item;
 const Op = db.Sequelize.Op;
 
 // Find all MenuItems by restaurant id (only active)
-exports.findAllByRestaurant = (req, res) => {
+exports.findAllByRestaurant = async (req, res) => {
   const restaurant_id = req.params.restaurant_id;
 
-  MenuItem.findAll({
-    where: { restaurantId: restaurant_id, status: "active" }
-  })
-    .then(data => res.send(data))
-    .catch(err =>
-      res.status(500).send({
-        message: err.message || "Some error occurred while retrieving menu items."
-      })
-    );
+  try {
+    const restaurant = await db.restaurant.findByPk(restaurant_id);
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found." });
+    }
+
+    if (restaurant.status !== "active") {
+      return res.status(403).json({ message: "Restaurant is inactive." });
+    }
+
+    const menuItems = await MenuItem.findAll({
+      where: { restaurantId: restaurant_id }
+    });
+
+    res.send(menuItems);
+
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || "Some error occurred while retrieving menu items."
+    });
+  }
 };
 
 // Create and Save a new MenuItem under a restaurant
