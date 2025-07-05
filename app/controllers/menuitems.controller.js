@@ -2,33 +2,27 @@ const db = require("../models");
 const MenuItem = db.menu_item;
 const Op = db.Sequelize.Op;
 
-// Create and Save a new MenuItem
-
-
-
-// Find all MenuItems by restaurant id
+// Find all MenuItems by restaurant id (only active)
 exports.findAllByRestaurant = (req, res) => {
   const restaurant_id = req.params.restaurant_id;
 
- MenuItem.findAll({ where: { restaurantId: restaurant_id } })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+  MenuItem.findAll({
+    where: { restaurantId: restaurant_id, status: "active" }
+  })
+    .then(data => res.send(data))
+    .catch(err =>
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving menu items by restaurant."
-      });
-    });
+        message: err.message || "Some error occurred while retrieving menu items."
+      })
+    );
 };
 
 // Create and Save a new MenuItem under a restaurant
 exports.createUnderRestaurant = (req, res) => {
   if (!req.body.item_name || !req.body.price || !req.body.category || !req.body.created_by || !req.body.restaurantId) {
-    res.status(400).send({
-      message: "Content can not be empty! (item_name, price, category, created_by, restaurantId are required)"
+    return res.status(400).send({
+      message: "item_name, price, category, created_by, restaurantId are required."
     });
-    return;
   }
 
   const menuItem = {
@@ -39,43 +33,38 @@ exports.createUnderRestaurant = (req, res) => {
     photo: req.body.photo,
     created_by: req.body.created_by,
     updated_by: req.body.updated_by,
-    restaurantId: req.body.restaurantId
+    restaurantId: req.body.restaurantId,
+    status: "active"
   };
 
   MenuItem.create(menuItem)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+    .then(data => res.send(data))
+    .catch(err =>
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the MenuItem."
-      });
-    });
+        message: err.message || "Some error occurred while creating the MenuItem."
+      })
+    );
 };
 
-// Retrieve all MenuItems from the database
+// Retrieve all active MenuItems from the database
 exports.findAll = (req, res) => {
   const item_name = req.query.item_name;
-  var condition = item_name ? { item_name: { [Op.like]: `%${item_name}%` } } : null;
+  const condition = item_name ? { item_name: { [Op.like]: `%${item_name}%` }, status: "active" } : { status: "active" };
 
-  MenuItem.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+  MenuItem.findAll()
+    .then(data => res.send(data))
+    .catch(err =>
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving menu items."
-      });
-    });
+        message: err.message || "Some error occurred while retrieving menu items."
+      })
+    );
 };
 
-// Find a single MenuItem by id
+// Find a single active MenuItem by id
 exports.findOne = (req, res) => {
   const id = req.params.id;
 
-  MenuItem.findByPk(id)
+  MenuItem.findOne({ where: { id: id, status: "active" } })
     .then(data => {
       if (data) {
         res.send(data);
@@ -85,11 +74,11 @@ exports.findOne = (req, res) => {
         });
       }
     })
-    .catch(err => {
+    .catch(err =>
       res.status(500).send({
         message: "Error retrieving MenuItem with id=" + id
-      });
-    });
+      })
+    );
 };
 
 // Update a MenuItem by id
@@ -101,76 +90,66 @@ exports.update = (req, res) => {
   })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "MenuItem was updated successfully."
-        });
+        res.send({ message: "MenuItem was updated successfully." });
       } else {
-        res.send({
-          message: `Cannot update MenuItem with id=${id}. Maybe MenuItem was not found or req.body is empty!`
+        res.status(404).send({
+          message: `Cannot update MenuItem with id=${id}. Maybe not found or empty request.`
         });
       }
     })
-    .catch(err => {
+    .catch(err =>
       res.status(500).send({
         message: "Error updating MenuItem with id=" + id
-      });
-    });
+      })
+    );
 };
 
-// Delete a MenuItem by id
+// Soft Delete a MenuItem by id (mark inactive)
 exports.delete = (req, res) => {
   const id = req.params.id;
 
-  MenuItem.destroy({
-    where: { id: id }
-  })
+  MenuItem.update({ status: "inactive" }, { where: { id: id } })
     .then(num => {
       if (num == 1) {
-        res.send({
-          message: "MenuItem was deleted successfully!"
-        });
+        res.send({ message: "MenuItem was marked inactive successfully!" });
       } else {
-        res.send({
-          message: `Cannot delete MenuItem with id=${id}. Maybe MenuItem was not found!`
+        res.status(404).send({
+          message: `Cannot mark MenuItem inactive with id=${id}. Not found.`
         });
       }
     })
-    .catch(err => {
+    .catch(err =>
       res.status(500).send({
-        message: "Could not delete MenuItem with id=" + id
-      });
-    });
+        message: "Could not update MenuItem with id=" + id
+      })
+    );
 };
 
-// Delete all MenuItems from the database
+// Delete all MenuItems (if you really need this: use carefully)
 exports.deleteAll = (req, res) => {
   MenuItem.destroy({
     where: {},
     truncate: false
   })
-    .then(nums => {
-      res.send({ message: `${nums} MenuItems were deleted successfully!` });
-    })
-    .catch(err => {
+    .then(nums =>
+      res.send({ message: `${nums} MenuItems were deleted successfully!` })
+    )
+    .catch(err =>
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all menu items."
-      });
-    });
+        message: err.message || "Some error occurred while removing all menu items."
+      })
+    );
 };
 
-// Find all MenuItems by category
+// Find all active MenuItems by category
 exports.findAllByCategory = (req, res) => {
   const category = req.params.category;
 
-  MenuItem.findAll({ where: { category: category } })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
+  MenuItem.findAll({ where: { category: category, status: "active" } })
+    .then(data => res.send(data))
+    .catch(err =>
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving menu items by category."
-      });
-    });
+        message: err.message || "Some error occurred while retrieving menu items."
+      })
+    );
 };

@@ -1,8 +1,6 @@
 const db = require("../models");
 const Restaurant = db.restaurant;
 
-
-
 // Authenticate restaurant by username and password
 exports.authenticate = async (req, res) => {
   const { username, PASSWORD } = req.body;
@@ -12,13 +10,14 @@ exports.authenticate = async (req, res) => {
   }
 
   try {
-    const restaurant = await Restaurant.findOne({ where: { username, PASSWORD } });
+    const restaurant = await Restaurant.findOne({
+      where: { username, PASSWORD, status: "active" }
+    });
 
     if (!restaurant) {
       return res.status(401).json({ message: "Invalid username or password." });
     }
 
-    // Login successful, send restaurant details
     res.json({
       message: "Login successful",
       restaurant: {
@@ -36,9 +35,6 @@ exports.authenticate = async (req, res) => {
   }
 };
 
-
-
-
 // Create new restaurant
 exports.create = async (req, res) => {
   try {
@@ -49,7 +45,7 @@ exports.create = async (req, res) => {
   }
 };
 
-// Get all restaurants
+// Get all active restaurants
 exports.findAll = async (req, res) => {
   try {
     const restaurants = await Restaurant.findAll();
@@ -59,10 +55,12 @@ exports.findAll = async (req, res) => {
   }
 };
 
-// Get one restaurant by id
+// Get one active restaurant by id
 exports.findOne = async (req, res) => {
   try {
-    const restaurant = await Restaurant.findByPk(req.params.id);
+    const restaurant = await Restaurant.findOne({
+      where: { id: req.params.id, status: "active" }
+    });
     if (!restaurant) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
@@ -87,16 +85,17 @@ exports.update = async (req, res) => {
   }
 };
 
-// Delete restaurant
+// Mark restaurant as inactive instead of deleting
 exports.delete = async (req, res) => {
   try {
-    const deleted = await Restaurant.destroy({
-      where: { id: req.params.id }
-    });
-    if (deleted === 0) {
+    const result = await Restaurant.update(
+      { status: "inactive" },
+      { where: { id: req.params.id } }
+    );
+    if (result[0] === 0) {
       return res.status(404).json({ message: "Restaurant not found" });
     }
-    res.json({ message: "Restaurant deleted successfully" });
+    res.json({ message: "Restaurant marked as inactive successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
