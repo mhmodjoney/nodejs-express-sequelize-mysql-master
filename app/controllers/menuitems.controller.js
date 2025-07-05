@@ -18,7 +18,7 @@ exports.findAllByRestaurant = async (req, res) => {
     }
 
     const menuItems = await MenuItem.findAll({
-      where: { restaurantId: restaurant_id }
+      where: { restaurantId: restaurant_id ,status: "active"}
     });
 
     res.send(menuItems);
