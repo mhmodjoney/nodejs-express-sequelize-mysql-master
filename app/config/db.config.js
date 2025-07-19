@@ -1,5 +1,5 @@
 module.exports = {
-  URL: "postgresql://mhmodmore7mhmod:npg_8CFgzOm1HpTI@ep-red-recipe-548838-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require",
+  URL: "postgresql://postgres:ilQTefGiJbDOuLRQhiNgAJygMRiggUWk@mainline.proxy.rlwy.net:39566/railway",
   dialect: "postgres",
   pool: {
     max: 5,
